@@ -460,6 +460,8 @@ class PluginFusioninventoryCommunicationNetworkInventory {
 
       $a_inventory = $_SESSION['SOURCE_XMLDEVICE'];
 
+      $dbu = new DbUtils();
+
       $errors = '';
       $class = new $itemtype;
       if ($items_id == "0") {
@@ -490,7 +492,9 @@ class PluginFusioninventoryCommunicationNetworkInventory {
             }
             $inputrulelog['items_id'] = $items_id;
             $inputrulelog['itemtype'] = $itemtype;
-            $inputrulelog['method'] = 'snmpinventory';
+            $inputrulelog['method'] = 'networkinventory';
+            Toolbox::logDebug($_SESSION['plugin_fusinvsnmp_datacriteria']);
+            $inputrulelog['criteria'] = $dbu->exportArrayToDB(unserialize($_SESSION['plugin_fusinvsnmp_datacriteria']));
             $pfRulematchedlog->add($inputrulelog);
             $pfRulematchedlog->cleanOlddata($items_id, $itemtype);
             unset($_SESSION['plugin_fusioninventory_rules_id']);
@@ -554,7 +558,7 @@ class PluginFusioninventoryCommunicationNetworkInventory {
     * @return string
     */
    static function getMethod() {
-      return 'snmpinventory';
+      return 'networkinventory';
    }
 
 

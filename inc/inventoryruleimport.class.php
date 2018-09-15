@@ -746,6 +746,7 @@ class PluginFusioninventoryInventoryRuleImport extends Rule {
          "pluginFusioninventory-rules",
          "execute actions: ". count($this->actions) ."\n"
       );
+      $dbu = new DbUtils();
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -764,6 +765,7 @@ class PluginFusioninventoryInventoryRuleImport extends Rule {
                            if (!isset($params['return'])) {
                               $inputrulelog['items_id'] = $items_id;
                               $inputrulelog['itemtype'] = $itemtype;
+                              $inputrulelog['criteria'] = $dbu->exportArrayToDB($this->criteriaInput);
                               $pfRulematchedlog->add($inputrulelog);
                               $pfRulematchedlog->cleanOlddata($items_id, $itemtype);
                               $class->rulepassed($items_id, $itemtype);
@@ -1092,4 +1094,10 @@ class PluginFusioninventoryInventoryRuleImport extends Rule {
       ksort($types);
       return $types;
    }
+
+   function prepareInputDataForProcess($input, $params) {
+      $this->criteriaInput = $input;
+      return $input;
+   }
+
 }

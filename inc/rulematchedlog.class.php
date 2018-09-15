@@ -222,10 +222,12 @@ class PluginFusioninventoryRulematchedlog extends CommonDBTM {
 
       $rule    = new PluginFusioninventoryInventoryRuleImport();
       $pfAgent = new PluginFusioninventoryAgent();
+      $dbu     = new DbUtils();
 
       $class = PluginFusioninventoryItem::getFIItemClassInstance($itemtype);
-      $class->showDownloadInventoryFile($items_id);
-
+      if ($class) {
+         $class->showDownloadInventoryFile($items_id);
+      }
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
       } else {
@@ -246,7 +248,7 @@ class PluginFusioninventoryRulematchedlog extends CommonDBTM {
       echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 
       echo "<tr>";
-      echo "<th colspan='4'>";
+      echo "<th colspan='5'>";
       echo __('Rule import logs', 'fusioninventory');
 
       echo "</th>";
@@ -267,6 +269,10 @@ class PluginFusioninventoryRulematchedlog extends CommonDBTM {
       echo "</th>";
       echo "<th>";
       echo __('Module', 'fusioninventory');
+
+      echo "</th>";
+      echo "<th>";
+      echo _n('Criterion', 'Criteria', 2);
 
       echo "</th>";
       echo "</tr>";
@@ -298,6 +304,22 @@ class PluginFusioninventoryRulematchedlog extends CommonDBTM {
             if ($mdata['method'] == $data['method']) {
                echo $mdata['name'];
             }
+         }
+         echo "</td>";
+         echo "<td>";
+         $criteria = $dbu->importArrayFromDB($data['criteria']);
+         if (count($criteria) > 0) {
+            echo "<ul style='list-style-type:disc'>";
+            foreach ($criteria as $key=>$value) {
+               echo "<li>".$key.": ";
+               if (is_array($value)) {
+                  echo implode("<br>", $value);
+               } else {
+                  echo $value;
+               }
+               echo "</li>";
+            }
+            echo "</ul><hr style='border: 0;height: 1px;background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);'>";
          }
          echo "</td>";
          echo "</tr>";
